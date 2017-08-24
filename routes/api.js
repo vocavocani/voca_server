@@ -19,8 +19,9 @@ module.exports = (router) => {
     .post(userCtrl.login);
 
   // PROFILE
-  router.route('/users/:user_idx')
+  router.route('/users')
     .get(authCtrl.auth, userCtrl.profile);
+
 
 
 

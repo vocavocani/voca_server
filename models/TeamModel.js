@@ -39,16 +39,16 @@ exports.getTeamMemberPermission = (team_idx, user_idx) => {
 exports.list = (user_idx) => {
   return new Promise((resolve, reject) => {
     const sql =
-      `SELECT
-        t.team_idx             team_idx,
-        t.team_name            team_name,
-        tc.team_category_name team_category_name,
-        t.team_cur_cap         team_current_cap,
-        t.team_max_cap         team_max_cap,
-        t.team_image           team_image
-      FROM team t, team_category tc, team_member tm
-      WHERE t.team_category_idx = tc.team_category_idx AND t.team_idx = tm.team_idx AND tm.user_idx = ? AND tm.team_member_permission >= 0 `;
-
+      `
+      SELECT
+        t.team_idx,
+        t.team_name,
+        tc.team_category_name
+      FROM team AS t
+        LEFT JOIN team_member AS tm ON t.team_idx = tm.team_idx
+        LEFT JOIN team_category AS tc ON t.team_category_idx = tc.team_category_idx
+      WHERE tm.user_idx = ? AND team_member_permission >= 0;
+      `;
     pool.query(sql, user_idx, (err, rows) => {
       if (err) {
         reject(err);
@@ -71,9 +71,9 @@ exports.create = (teamData) => {
       .then((context) => {
         return new Promise((resolve, reject) => {
           const sql =
-            "INSERT INTO team(user_idx, team_name, team_rule, team_max_cap, team_is_public, team_category_idx, team_image) " +
-            "VALUES (?, ?, ?, ?, ?, ?, ?) ";
-          context.conn.query(sql, [teamData.uIdx, teamData.name, teamData.rule, teamData.maxCap, teamData.isPublic, teamData.category, teamData.image], (err, rows) => {
+            "INSERT INTO team(team_name, team_rule, team_max_cap, team_is_public,  team_image) " +
+            "VALUES ( ?, ?, ?, ?, ?) ";
+          context.conn.query(sql, [teamData.name, teamData.rule, teamData.maxCap, teamData.isPublic, teamData.image], (err, rows) => {
             if (err) {
               context.error = err;
               reject(context)
