@@ -10,9 +10,6 @@ const cors = require('cors');
 const app = express();
 
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-
 if (process.env.NODE_ENV !== 'test') {
   app.use(logger('dev'));
 }
@@ -33,7 +30,7 @@ require('./routes')(app);
 
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.info(`[MOSAIC] Listening on Port ${PORT}`);
+  console.info(`[VOCAVOCANI] Listening on Port ${PORT}`);
 });
 
 module.exports = app;
