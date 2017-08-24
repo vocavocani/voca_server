@@ -26,6 +26,7 @@ exports.write = async(req, res, next) => {
 
   try {
     //Post write permission check
+
     switch (await teamModel.getTeamMemberPermission(req.params.team_idx, req.user_idx)){
       case member_permission.MASTER_MEMBER: break;
       case member_permission.APPROVED_MEMBER: break;
@@ -46,6 +47,7 @@ exports.write = async(req, res, next) => {
     const post_data = {
       user_idx: req.user_idx,
       team_idx: req.params.team_idx,
+      post_flag: req.body.flag,
       post_title: req.body.title,
       post_content: req.body.content,
       post_image: images
