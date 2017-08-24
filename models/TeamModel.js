@@ -217,26 +217,6 @@ exports.confirm = (confirm_data) => {
 };
 
 
-/**
- * 팀 메인페이지 조회
- * @param team_idx
- */
-exports.retrieve = (team_idx) => {
-  return new Promise((resolve, reject) => {
-    // 조회 값 추가 할 것!
-    const sql =
-      "SELECT team_idx, team_name, team_category_idx, team_ranking, team_rule, team_max_cap, team_created_date " +
-      "FROM team " +
-      "WHERE team_idx = ? ";
-    pool.query(sql, team_idx, (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-      }
-    })
-  })
-};
 
 exports.info_write = (info_data) => {
   return new Promise((resolve, reject) => {
