@@ -38,12 +38,12 @@ exports.getTeamMemberPermission = (team_idx, user_idx) => {
  */
 exports.list = (user_idx) => {
   return new Promise((resolve, reject) => {
-    //TODO 태그 추가 
+    //TODO 태그 추가
     const sql =
       `
       SELECT
         t.team_idx,
-        t.team_name,
+        t.team_name
       FROM team AS t
         LEFT JOIN team_member AS tm ON t.team_idx = tm.team_idx
       WHERE tm.user_idx = ? AND team_member_permission >= 0;
