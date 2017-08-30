@@ -15,7 +15,7 @@ exports.register = (user_data) => {
   return new Promise((resolve, reject) => {
       const sql = "SELECT user_id FROM user WHERE user_id = ?";
 
-      pool.query(sql, [user_data.user_id], (err, rows) => {  // 아이디 중복 체크
+      pool.query(sql, [user_data.id], (err, rows) => {  // 아이디 중복 체크
         if (err) {
           reject(err);
         } else {

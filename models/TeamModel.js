@@ -263,3 +263,22 @@ exports.info_list = (team_data) => {
   });
 };
 
+
+exports.testing = (tag) => {
+  return new Promise((resolve, reject) => {
+    const sql =
+      `
+      SELECT tag_name
+      FROM tag
+      WHERE tag_name = ?;
+      `;
+    pool.query(sql, [tag], (err, rows) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(rows)
+      }
+    })
+  })
+};
+

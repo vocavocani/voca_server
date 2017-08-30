@@ -43,7 +43,7 @@ exports.create = async(req, res, next) => {
       rule: req.body.rule,
       maxCap: req.body.max_cap,
       isPublic: req.body.is_public,
-      category: req.body.category,
+      tag: req.body.tag,
       image : image
     };
 
@@ -51,7 +51,6 @@ exports.create = async(req, res, next) => {
     result = await teamModel.create(teamData);
 
   } catch (error) {
-    console.log(error);
     return next(error);
   }
 
@@ -187,3 +186,23 @@ exports.info_list = async(req, res, next) => {
   return res.status(200).json(result)
 };
 
+exports.testing = async(req,res, next) => {
+  let results =[];
+
+  try {
+    // const tag =['toeic', 'teps' ];
+    const tag = req.body.tag;
+    console.log(tag);
+
+    for(let i =0 ; i < tag.length ; i++) {
+      let result = await teamModel.testing(tag);
+      results.push(result)
+    }
+
+
+  } catch (error) {
+    return next(error)
+  }
+  return res.json(results);
+
+};

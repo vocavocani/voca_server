@@ -9,13 +9,13 @@ const resMsg = require('../errors.json');
  ********************/
 exports.register = async(req, res, next) => {
 
-  if (!req.body.id || !req.body.pw1 ||!req.body.pw2|| !req.body.nickname ) {
-    return res.status(400).end();
-  }
+  // if (!req.body.id || !req.body.pw1 ||!req.body.pw2|| !req.body.nickname ) {
+  //   return res.status(400).end();
+  // }
 
   let pw;
   if (req.body.pw1 !== req.body.pw2) {
-    return res.status(400).end()
+    return res.status(400).json(resMsg[1404])
   } else {
     pw = req.body.pw1
   }

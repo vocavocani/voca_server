@@ -50,6 +50,10 @@ async function resetDB (table) {
 
 resetDB('user');
 
+let token ;
+
+
+
 describe('POST /api/users/register', () => {
 
   describe('회원가입 성공', ()=> {
@@ -60,7 +64,8 @@ describe('POST /api/users/register', () => {
         .post('/api/users/register')
         .send({
           id: 'aksguraksgur1',
-          pw: 'aksguraksgur',
+          pw1: 'aksguraksgur1',
+          pw2: 'aksguraksgur1',
           nickname: 'aksguraksgur',
           // img: {
           //   location: 'testest'
@@ -125,10 +130,11 @@ describe('POST /api/users/login' , () => {
         .post('/api/users/login')
         .send({
           id: 'aksguraksgur1',
-          pw: 'aksguraksgur',
+          pw: 'aksguraksgur1',
         })
         .expect(200)
         .end((err,res) => {
+          token = res.body.token;
           body = res.body;
           done();
         });
@@ -149,6 +155,20 @@ describe('POST /api/users/login' , () => {
         .expect(400)
         .end(done)
     });
+
+    it('만료된 토큰 401 반환', (done) => {
+      request(app)
+        .post('/api/users/login')
+        .send({
+          id: "aksguraksgur1",
+          pw: "aksguraksgur1",
+        })
+        .expect(401)
+        .end(done)
+    });
   });
+
+
 });
+
 
