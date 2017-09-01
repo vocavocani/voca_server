@@ -14,7 +14,7 @@ module.exports = (router) => {
 
   // ROOT
   router.route('/t')
-    .post(teamCtrl.testing);
+    .post(teamCtrl.tagging);
 
   // USER
   router.route('/users/register')

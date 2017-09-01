@@ -63,7 +63,7 @@ exports.list = (user_idx) => {
  *  @param: team_data = {user_idx, team_name, team_rule, team_category, team_max_cap, team_is_public}
  ********************/
 
-exports.create = (teamData) => {
+exports.create = (teamData, tagIdx) => {
   return new Promise((resolve, reject) => {
     transactionWrapper.getConnection(pool)
       .then(transactionWrapper.beginTransaction)
@@ -71,7 +71,7 @@ exports.create = (teamData) => {
         return new Promise((resolve, reject) => {
           const sql =
             "INSERT INTO team(team_name, team_rule, team_max_cap, team_is_public,  team_image) " +
-            "VALUES ( ?, ?, ?, ?, ?) ";
+            "VALUES ( ?, ?, ?, ?, ?) "; // 팀 추가
           context.conn.query(sql, [teamData.name, teamData.rule, teamData.maxCap, teamData.isPublic, teamData.image], (err, rows) => {
             if (err) {
               context.error = err;
@@ -100,7 +100,7 @@ exports.create = (teamData) => {
               if (rows.affectedRows === 1) {
                 resolve(context); // ??? context ????
               } else {
-                context.error = new Error("Team Create Custom Error 2")
+                context.error = new Error("Team Create Custom Error 2");
                 reject(context);
               }
             }
@@ -109,14 +109,57 @@ exports.create = (teamData) => {
       })
       .then((context) => {
         return new Promise((resolve, reject) => {
-          const sql = "SELECT * FROM team WHERE team_idx = ? ";
+
+          let data = [];
+          for(let i =0 ; i < tagIdx.length; i++){
+            data[i] = [context.result.insertId];
+            data[i].push(tagIdx[i])
+          }
+          // bulk insert
+          const sql =
+            `
+            INSERT INTO team_to_tag(team_idx, tag_idx)
+            VALUES ?
+            `;
+
+          context.conn.query(sql, [data], (err,rows) => {
+            if (err) {
+              context.error = err;
+              reject(context)
+            } else {
+              if (rows.affectedRows !== 0) {
+                resolve(context)
+              } else {
+                context.error = new Error('Team Create Custom Error 3');
+                reject(context)
+              }
+            }
+          })
+
+        })
+      })
+      .then((context) => {
+        return new Promise((resolve, reject) => {
+          const sql =
+            `
+            SELECT
+              team_idx,
+              team_name,
+              team_rule,
+              team_max_cap,
+              team_cur_cap,
+              team_is_public,
+              team_image
+            FROM team
+            WHERE team_idx = ?
+            `;
 
           context.conn.query(sql, [context.result.insertId], (err, rows) => {
             if (err) {
               context.error = err;
               reject(context)
             } else {
-              context.result = rows;
+              context.result = rows[0];
               resolve(context)
             }
           })
@@ -264,20 +307,95 @@ exports.info_list = (team_data) => {
 };
 
 
-exports.testing = (tag) => {
+exports.tagging = (tag) => {
   return new Promise((resolve, reject) => {
     const sql =
       `
-      SELECT tag_name
+      SELECT tag_idx, tag_name, tag_count
       FROM tag
       WHERE tag_name = ?;
       `;
+    console.log(tag);
     pool.query(sql, [tag], (err, rows) => {
       if (err) {
         reject(err)
       } else {
-        resolve(rows)
+        let data = {};
+        if (rows.length === 0) {
+          data = {
+            'isInsert': true,
+            'tag_count': 0
+          };
+          //resolve(true) // 태그가 없을 경우
+          resolve(data)
+        } else {
+          data = {
+            'isInsert': false,
+            'tag_count': rows[0].tag_count
+          };
+          //resolve(false) // 태그가 있는 경우
+          resolve(data)
+        }
       }
+    })
+  }).then((data)=> {
+    if (data.isInsert) { // 태그가 없을 경우
+      return new Promise((resolve, reject) => {
+        const sql =
+          `
+          INSERT INTO tag(tag_name, tag_count) VALUES ( ?, 1 ) 
+          `;
+        pool.query(sql, [tag], (err, rows) => {
+          if (err) {
+            reject(err)
+          } else {
+            if (rows.affectedRows === 1) {
+              resolve(rows)
+            } else {
+              const _err = new Error("INSERT Tag Custom Error");
+              reject(_err)
+            }
+          }
+        });
+      })
+    }
+    else { // 태그가 있을 경우
+      return new Promise((resolve, reject) => {
+        const sql =
+          `
+          UPDATE tag SET tag_count = ? WHERE tag_name = ?
+          `;
+        let tag_count = parseInt(data.tag_count + 1, 10);
+        pool.query(sql, [tag_count, tag], (err,rows) => {
+          if(err){
+            reject(err)
+          } else {
+            if (rows.affectedRows === 1 ) {
+              resolve(rows)
+            } else {
+              const _err = new Error("UPDATE tag Custom Error");
+              reject(_err)
+            }
+          }
+        })
+      })
+    }
+  }).then(() => {
+    return new Promise((resolve, reject) => {
+      const sql =
+        `
+        SELECT tag_idx, tag_name, tag_count
+        FROM tag
+        WHERE tag_name = ?
+        `;
+      pool.query(sql, [tag], (err, rows) => {
+        if(err) {
+          reject(err)
+        } else {
+          resolve(rows[0])
+        }
+      })
+
     })
   })
 };
