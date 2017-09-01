@@ -17,7 +17,8 @@ exports.list = (team_idx) => {
       `SELECT p.post_idx, p.user_idx, p.team_idx, p.post_content, p.post_created_at, p.post_updated_at, u.user_nickname
     FROM post as p
     LEFT JOIN user as u ON p.user_idx = u.user_idx
-    WHERE p.team_idx = ? `;
+    WHERE p.team_idx = ? 
+    `;
 
     pool.query(sql, team_idx, (err, rows) => {
       if (err) {
@@ -43,9 +44,9 @@ exports.write = (post_data) => {
       .then((context) => {
         return new Promise((resolve, reject) => {
           const sql =
-            "INSERT INTO post (user_idx, team_idx, post_title, post_content) " +
-            "VALUES (?, ?, ?, ?) ";
-          context.conn.query(sql, [post_data.user_idx, post_data.team_idx, post_data.post_title, post_data.post_content], (err, rows) => {
+            "INSERT INTO post (user_idx, team_idx, post_falg,post_title, post_content) " +
+            "VALUES (?, ?, ?, ?, ?) ";
+          context.conn.query(sql, [post_data.user_idx, post_data.team_idx, post_data.post_flag, post_data.post_title, post_data.post_content], (err, rows) => {
             if (err) {
               context.error = err;
               reject(context)
@@ -157,7 +158,7 @@ exports.editPermissionCheck = (...check_data) => {
 };
 
 
-// 담벼락 수정
+
 exports.edit = (post_data) => {
   return new Promise((resolve, reject) => {
 
@@ -182,7 +183,6 @@ exports.edit = (post_data) => {
 };
 
 
-// 담벼락 삭제
 exports.delete = () => {
 
 };

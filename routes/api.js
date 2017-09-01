@@ -1,5 +1,8 @@
 'use strict';
 
+const validate = require('express-validation');
+const ParamValidation = require('../config/ParamValidation');
+
 const imageCtrl = require('../controllers/ImageCtrl');
 const authCtrl = require('../controllers/AuthCtrl');
 const userCtrl = require('../controllers/UserCtrl');
@@ -9,14 +12,18 @@ const postCtrl = require('../controllers/PostCtrl');
 
 module.exports = (router) => {
 
+  // ROOT
+  router.route('/t')
+    .post(teamCtrl.testing);
+
   // USER
   router.route('/users/register')
-    .post(imageCtrl.uploadSingle, userCtrl.register);
+    .post(validate(ParamValidation.user_register),imageCtrl.uploadSingle, userCtrl.register);
   router.route('/users/check')
     .post(userCtrl.check);
 
   router.route('/users/login')
-    .post(userCtrl.login);
+    .post(validate(ParamValidation.user_login),userCtrl.login);
 
   // PROFILE
   router.route('/users')
