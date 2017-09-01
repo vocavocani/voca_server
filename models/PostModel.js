@@ -44,7 +44,7 @@ exports.write = (post_data) => {
       .then((context) => {
         return new Promise((resolve, reject) => {
           const sql =
-            "INSERT INTO post (user_idx, team_idx, post_falg,post_title, post_content) " +
+            "INSERT INTO post (user_idx, team_idx, post_falg, post_title, post_content) " +
             "VALUES (?, ?, ?, ?, ?) ";
           context.conn.query(sql, [post_data.user_idx, post_data.team_idx, post_data.post_flag, post_data.post_title, post_data.post_content], (err, rows) => {
             if (err) {

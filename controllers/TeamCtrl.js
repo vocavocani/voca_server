@@ -25,8 +25,9 @@ exports.list = async(req, res, next) => {
  *  Create
  ********************/
 exports.create = async(req, res, next) => {
-  let result = '';
-
+  let result = {};
+  let tagSet=[];
+  let tagIdx=[];
   try {
 
     // TODO 팀 생성 제한 기능 추가
@@ -37,19 +38,29 @@ exports.create = async(req, res, next) => {
       image = req.file.location;
     }
 
+    const tags = req.body.tag;
+
+
+    for(let i =0 ; i < tags.length ; i++) {
+      let tag = await teamModel.tagging(tags[i]);
+      tagSet.push(tag);
+      tagIdx.push(tagSet[i].tag_idx)
+
+    }
+
+
     const teamData = {
       uIdx: req.user_idx,
       name: req.body.name,
       rule: req.body.rule,
       maxCap: req.body.max_cap,
       isPublic: req.body.is_public,
-      tag: req.body.tag,
-      image : image
+      image: image,
+
     };
 
-    console.log(teamData);
-    result = await teamModel.create(teamData);
-
+    result = await teamModel.create(teamData, tagIdx);
+    result.tags = tagSet
   } catch (error) {
     return next(error);
   }
@@ -186,19 +197,25 @@ exports.info_list = async(req, res, next) => {
   return res.status(200).json(result)
 };
 
-exports.testing = async(req,res, next) => {
+exports.tagging = async(req,res, next) => {
   let results =[];
 
   try {
     // const tag =['toeic', 'teps' ];
-    const tag = req.body.tag;
-    console.log(tag);
+    const tags = req.body.tag; // tepsss
+    console.log(req.body.tag);
+    console.log(req.body.tag[0], req.body.tag[1]);
+    console.log(tags);
 
-    for(let i =0 ; i < tag.length ; i++) {
-      let result = await teamModel.testing(tag);
+
+    for(let i =0 ; i < tags.length ; i++) {
+
+      let result = await teamModel.tagging(tags[i]);
       results.push(result)
+
     }
 
+    console.log(results)
 
   } catch (error) {
     return next(error)

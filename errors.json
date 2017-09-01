@@ -17,7 +17,7 @@
     "status": 400,
     "code": 0,
     "message": "아이디가 중복됩니다.",
-    "description": "Exist Email"
+    "description": "Exist ID"
   },
   "1402": {
     "status": 400,
