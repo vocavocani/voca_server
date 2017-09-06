@@ -11,11 +11,11 @@ const config = require('../config/config');
  *  Register
  *  @param: user_data = {user_id, user_password, user_nickname}
  ********************/
-exports.register = (user_data) => {
+exports.register = (userData) => {
   return new Promise((resolve, reject) => {
       const sql = "SELECT user_id FROM user WHERE user_id = ?";
 
-      pool.query(sql, [user_data.id], (err, rows) => {  // 아이디 중복 체크
+      pool.query(sql, [userData.id], (err, rows) => {  // 아이디 중복 체크
         if (err) {
           reject(err);
         } else {
@@ -34,7 +34,7 @@ exports.register = (user_data) => {
           "VALUES (?, ?, ?, ?) ";
 
 
-        pool.query(sql, [user_data.id, user_data.pw, user_data.nickname, 'testimg'], (err, rows) => {  // 가입 시도
+        pool.query(sql, [userData.id, userData.pw, userData.nickname, 'testimg'], (err, rows) => {  // 가입 시도
           if (err) {
             reject(err);
           } else {
@@ -88,11 +88,11 @@ exports.check = (userData) => {
  *  Login
  *  @param: user_data = {user_id, user_password}
  ********************/
-exports.login = (user_data) => {
+exports.login = (userData) => {
   return new Promise((resolve, reject) => {
       const sql = "SELECT user_id FROM user WHERE user_id = ?";
 
-      pool.query(sql, [user_data.user_id], (err, rows) => {  // 아이디 존재 검사
+      pool.query(sql, [userData.user_id], (err, rows) => {  // 아이디 존재 검사
         if (err) {
           reject(err);
         } else {
@@ -111,7 +111,7 @@ exports.login = (user_data) => {
         "FROM user " +
         "WHERE user_id = ? and user_password = ?";
 
-      pool.query(sql, [user_data.user_id, user_data.user_password], (err, rows) => {
+      pool.query(sql, [userData.id, userData.pw], (err, rows) => {
         if (err) {
           reject(err);
         } else {

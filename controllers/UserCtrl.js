@@ -22,7 +22,7 @@ exports.register = async(req, res, next) => {
 
   let result = '';
   try {
-    const user_data = {
+    const userData = {
       id: req.body.id,
       pw: config.do_cipher(pw),
       nickname: req.body.nickname,
@@ -30,7 +30,7 @@ exports.register = async(req, res, next) => {
 
     };
 
-    result = await userModel.register(user_data);
+    result = await userModel.register(userData);
 
   } catch (error) {
     // TODO 에러 잡았을때 응답메세지, 응답코드 수정할것
@@ -85,12 +85,12 @@ exports.login = async(req, res, next) => {
   let result = '';
 
   try {
-    const user_data = {
-      user_id: req.body.id,
-      user_password: config.do_cipher(req.body.pw)
+    const userData = {
+      id: req.body.id,
+      pw: config.do_cipher(req.body.pw)
     };
 
-    result = await userModel.login(user_data);
+    result = await userModel.login(userData);
   } catch (error) {
     return next(error);
   }

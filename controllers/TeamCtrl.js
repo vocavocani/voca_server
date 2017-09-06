@@ -6,7 +6,7 @@ const member_permission = require('../utils').member_permission;
 /*******************
  *  My Team List
  ********************/
-exports.list = async(req, res, next) => {
+exports.list = async (req, res, next) => {
   let result = '';
 
   try {
@@ -24,10 +24,10 @@ exports.list = async(req, res, next) => {
 /*******************
  *  Create
  ********************/
-exports.create = async(req, res, next) => {
+exports.create = async (req, res, next) => {
   let result = {};
-  let tagSet=[];
-  let tagIdx=[];
+  let tagSet = [];
+  let tagIdx = [];
   try {
 
     // TODO 팀 생성 제한 기능 추가
@@ -39,9 +39,13 @@ exports.create = async(req, res, next) => {
     }
 
     const tags = req.body.tag;
+    console.log(req.body);
 
+    console.log('\n\n body.tag: ',req.body.name);
 
-    for(let i =0 ; i < tags.length ; i++) {
+    // tt = { '------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name': '"tag"\r\n\r\ntepss\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name="name"\r\n\r\nvvvv\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name="rule"\r\n\r\ngggg\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name="max_cap"\r\n\r\n8\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name="is_public"\r\n\r\n1\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED--\r\n' }
+
+    for (let i = 0; i < tags.length; i++) {
       let tag = await teamModel.tagging(tags[i]);
       tagSet.push(tag);
       tagIdx.push(tagSet[i].tag_idx)
@@ -72,12 +76,12 @@ exports.create = async(req, res, next) => {
 /*******************
  *  Apply
  ********************/
-exports.apply = async(req, res, next) => {
+exports.apply = async (req, res, next) => {
   let result = '';
 
   try {
     // TEAM apply
-    const apply_data = {
+    const applyData = {
       team_idx: req.params.team_idx,
       user_idx: req.user_idx,
       team_member_apply_msg: req.body.message,
@@ -85,7 +89,7 @@ exports.apply = async(req, res, next) => {
     };
 
     // TODO 한번만 지원할 수 있게 할 것!
-    result = await teamModel.apply(apply_data);
+    result = await teamModel.apply(applyData);
 
   } catch (error) {
     return next(error);
@@ -99,27 +103,30 @@ exports.apply = async(req, res, next) => {
 /*******************
  *  Confirm
  ********************/
-exports.confirm = async(req, res, next) => {
+exports.confirm = async (req, res, next) => {
   let result = '';
 
-  console.log(req.body, req.headers);
+
   try {
     // Team master permission check
     switch (await teamModel.getTeamMemberPermission(req.params.team_idx, req.user_idx)) {
-      case member_permission.MASTER_MEMBER: break;
+      case member_permission.MASTER_MEMBER:
+        break;
       case null:
-        console.log(1)
-        return next(400); break;
+        return next(400);
+        break;
       default:
         return next(9402);
     }
 
     // Already confirm user check
     switch (await teamModel.getTeamMemberPermission(req.params.team_idx, req.body.user_idx)) {
-      case member_permission.APPLY_MEMBER: break;
+      case member_permission.APPLY_MEMBER:
+        break;
       case null:
         console.log(2);
-        return next(400); break;
+        return next(400);
+        break;
       default:
         return next(1405);
     }
@@ -142,7 +149,7 @@ exports.confirm = async(req, res, next) => {
 /*******************
  *  Detail retrieve
  ********************/
-exports.retrieve = async(req, res, next) => {
+exports.retrieve = async (req, res, next) => {
   let result = '';
   try {
     result = await teamModel.retrieve(req.params.team_idx);
@@ -153,19 +160,19 @@ exports.retrieve = async(req, res, next) => {
 };
 
 
-exports.info_write = async(req, res, next) => {
-  let result= '';
+exports.info_write = async (req, res, next) => {
+  let result = '';
 
   try {
-
     switch (await teamModel.getTeamMemberPermission(req.params.team_idx, req.user_idx)) {
-      case member_permission.MASTER_MEMBER: break;
+      case member_permission.MASTER_MEMBER:
+        break;
       case null:
-        return next(400); break;
+        return next(400);
+        break;
       default:
         return next(9402);
     }
-
 
     const info_data = {
       user_idx: req.user_idx,
@@ -182,8 +189,8 @@ exports.info_write = async(req, res, next) => {
   return res.json(result)
 };
 
-exports.info_list = async(req, res, next) => {
-  let result = ``;
+exports.info_list = async (req, res, next) => {
+  let result ;
   try {
     const team_data = req.params.team_idx;
 
@@ -197,25 +204,21 @@ exports.info_list = async(req, res, next) => {
   return res.status(200).json(result)
 };
 
-exports.tagging = async(req,res, next) => {
-  let results =[];
+exports.tagging = async (req, res, next) => {
+  let results = [];
 
   try {
     // const tag =['toeic', 'teps' ];
     const tags = req.body.tag; // tepsss
-    console.log(req.body.tag);
-    console.log(req.body.tag[0], req.body.tag[1]);
-    console.log(tags);
 
 
-    for(let i =0 ; i < tags.length ; i++) {
+    for (let i = 0; i < tags.length; i++) {
 
       let result = await teamModel.tagging(tags[i]);
       results.push(result)
 
     }
 
-    console.log(results)
 
   } catch (error) {
     return next(error)

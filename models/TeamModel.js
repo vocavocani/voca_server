@@ -185,11 +185,11 @@ exports.create = (teamData, tagIdx) => {
  *  Apply
  *  @param: apply_data = {team_idx, user_idx, team_member_apply_msg}
  ********************/
-exports.apply = (apply_data) => {
+exports.apply = (applyData) => {
   return new Promise((resolve, reject) => {
       const sql = "INSERT INTO team_member SET ?";
 
-      pool.query(sql, apply_data, (err, rows) => {
+      pool.query(sql, applyData, (err, rows) => {
         if (err) {
           reject(err);
         } else {
@@ -315,7 +315,6 @@ exports.tagging = (tag) => {
       FROM tag
       WHERE tag_name = ?;
       `;
-    console.log(tag);
     pool.query(sql, [tag], (err, rows) => {
       if (err) {
         reject(err)
