@@ -1,7 +1,7 @@
 /*******************
  * Team Member Permissions
  ********************/
-exports.member_permission = {
+exports.memberPermission = {
   REJECTED_MEMBER: -2,
   APPLY_MEMBER: -1,
   APPROVED_MEMBER: 0,

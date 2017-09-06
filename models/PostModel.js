@@ -36,8 +36,8 @@ exports.list = (team_idx) => {
  * @param post_data = {user_idx, team_idx, post_contents}
  **/
 
-exports.write = (post_data) => {
-  let posted_idx;
+exports.write = (postData) => {
+  let postedIdx;
   return new Promise((resolve, reject) => {
     transactionWrapper.getConnection(pool)
       .then(transactionWrapper.beginTransaction)
@@ -46,13 +46,13 @@ exports.write = (post_data) => {
           const sql =
             "INSERT INTO post (user_idx, team_idx, post_falg, post_title, post_content) " +
             "VALUES (?, ?, ?, ?, ?) ";
-          context.conn.query(sql, [post_data.user_idx, post_data.team_idx, post_data.post_flag, post_data.post_title, post_data.post_content], (err, rows) => {
+          context.conn.query(sql, [postData.user_idx, postData.team_idx, postData.post_flag, postData.post_title, postData.post_content], (err, rows) => {
             if (err) {
               context.error = err;
               reject(context)
             } else {
               if (rows.affectedRows === 1 ) {
-                posted_idx = rows.insertId;
+                postedIdx = rows.insertId;
                 context.result = rows;
                 resolve(context)
               } else {
@@ -67,9 +67,9 @@ exports.write = (post_data) => {
         return new Promise((resolve, reject) => {
 
           let images = [];
-          for(let i =0 ; i < post_data.post_image.length; i++){
+          for(let i =0 ; i < postData.post_image.length; i++){
             images[i] = [context.result.insertId];
-            images[i].push(post_data.post_image[i].location)
+            images[i].push(postData.post_image[i].location)
           }
 
           const sql =
@@ -80,8 +80,7 @@ exports.write = (post_data) => {
               context.error = err;
               reject(context)
             } else {
-              if (rows.affectedRows === post_data.post_image.length ) {
-                console.log(rows);
+              if (rows.affectedRows === postData.post_image.length ) {
                 context.result = rows;
                 resolve(context)
               } else {
@@ -101,7 +100,7 @@ exports.write = (post_data) => {
               LEFT JOIN post_image AS pi ON pi.post_idx = p.post_idx
               WHERE p.post_idx = ? ;
             `;
-          context.conn.query(sql, [posted_idx], (err,rows ) => {
+          context.conn.query(sql, [postedIdx], (err,rows ) => {
             if (err) {
               context.error = err;
               reject(context)
@@ -170,7 +169,7 @@ exports.edit = (post_data) => {
       if (err) {
         reject(err);
       } else {
-        if (rows.affectedRows == 1) { // 담벼락 수정 시도
+        if (rows.affectedRows === 1) { // 담벼락 수정 시도
           resolve(rows);
         } else {
           const _err = new Error("Post Edit Error");

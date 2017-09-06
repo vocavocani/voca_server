@@ -2,9 +2,10 @@
 
 const postModel = require('../models/PostModel');
 const teamModel = require('../models/TeamModel');
-const member_permission = require('../utils').member_permission;
+const memberPermission = require('../utils').memberPermission;
 
-
+// TODO 글 상세보기 ( 댓글 조회 포함 )
+// TODO 댓글 작
 
 exports.list = async(req, res, next) => {
   let result = '';
@@ -28,8 +29,8 @@ exports.write = async(req, res, next) => {
     //Post write permission check
 
     switch (await teamModel.getTeamMemberPermission(req.params.team_idx, req.user_idx)){
-      case member_permission.MASTER_MEMBER: break;
-      case member_permission.APPROVED_MEMBER: break;
+      case memberPermission.MASTER_MEMBER: break;
+      case memberPermission.APPROVED_MEMBER: break;
       case null:
         return next(400); break;
       default:
@@ -44,7 +45,7 @@ exports.write = async(req, res, next) => {
       images = req.files
     }
 
-    const post_data = {
+    const postData = {
       user_idx: req.user_idx,
       team_idx: req.params.team_idx,
       post_flag: req.body.flag,
@@ -53,8 +54,7 @@ exports.write = async(req, res, next) => {
       post_image: images
     };
 
-    console.log(post_data);
-    result = await postModel.write(post_data);
+    result = await postModel.write(postData);
 
 
 
