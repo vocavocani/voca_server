@@ -39,11 +39,6 @@ exports.create = async (req, res, next) => {
     }
 
     const tags = req.body.tag;
-    console.log(req.body);
-
-    console.log('\n\n body.tag: ',req.body.name);
-
-    // tt = { '------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name': '"tag"\r\n\r\ntepss\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name="name"\r\n\r\nvvvv\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name="rule"\r\n\r\ngggg\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name="max_cap"\r\n\r\n8\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED\r\nContent-Disposition: form-data; name="is_public"\r\n\r\n1\r\n------WebKitFormBoundaryh557AQ5y3BZLZpED--\r\n' }
 
     for (let i = 0; i < tags.length; i++) {
       let tag = await teamModel.tagging(tags[i]);
