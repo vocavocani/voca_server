@@ -43,7 +43,8 @@ exports.list = (user_idx) => {
       `
       SELECT
         t.team_idx,
-        t.team_name
+        t.team_name,
+        t.team_image
       FROM team AS t
         LEFT JOIN team_member AS tm ON t.team_idx = tm.team_idx
       WHERE tm.user_idx = ? AND team_member_permission >= 0;
