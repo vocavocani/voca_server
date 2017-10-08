@@ -86,13 +86,13 @@ exports.check = (userData) => {
 
 /*******************
  *  Login
- *  @param: user_data = {user_id, user_password}
+ *  @param: userData = {user_id, user_password}
  ********************/
 exports.login = (userData) => {
   return new Promise((resolve, reject) => {
       const sql = "SELECT user_id FROM user WHERE user_id = ?";
 
-      pool.query(sql, [userData.user_id], (err, rows) => {  // 아이디 존재 검사
+      pool.query(sql, [userData.id], (err, rows) => {  // 아이디 존재 검사
         if (err) {
           reject(err);
         } else {
