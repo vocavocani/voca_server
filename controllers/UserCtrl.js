@@ -14,7 +14,6 @@ exports.register = async(req, res, next) => {
   // }
 
   let pw;
-  console.log(req.body.pw1, req.body.pw2);
   if (req.body.pw1 !== req.body.pw2) {
     return res.status(400).json(resMsg[1404])
   } else {

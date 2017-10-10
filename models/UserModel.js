@@ -34,7 +34,7 @@ exports.register = (userData) => {
           "VALUES (?, ?, ?, ?) ";
 
 
-        pool.query(sql, [userData.id, userData.pw, userData.nickname, 'testimg'], (err, rows) => {  // 가입 시도
+        pool.query(sql, [userData.id, userData.pw, userData.nickname, userData.img], (err, rows) => {  // 가입 시도
           if (err) {
             reject(err);
           } else {

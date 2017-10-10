@@ -15,7 +15,6 @@ const storageS3 = multerS3({
   bucket: 'zzicme/images',
   acl: 'public-read',
   key: function (req, file, callback) {
-    console.log(file);
     const fname = Date.now() + '_' + file.originalname;
     callback(null, fname);
   }

@@ -18,7 +18,7 @@ module.exports = (router) => {
 
   // USER
   router.route('/users/register')
-    .post(imageCtrl.uploadSingle, userCtrl.register);
+    .post(imageCtrl.uploadSingle, validate(ParamValidation.user_register),userCtrl.register);
   router.route('/users/check')
     .post(userCtrl.check);
 
