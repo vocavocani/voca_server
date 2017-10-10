@@ -17,6 +17,21 @@ exports.list = async (req, res, next) => {
     return next(error);
   }
 
+
+  let tags = [];
+
+  result.forEach((resultObj) => {
+    tags.push(resultObj.tags.split(','));
+
+    resultObj.tags = tags;
+  });
+
+
+
+
+
+
+
   // success
   return res.json(result);
 };
