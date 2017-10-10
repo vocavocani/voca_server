@@ -18,20 +18,12 @@ exports.list = async (req, res, next) => {
   }
 
 
-  let tags = [];
+
 
   result.forEach((resultObj) => {
-    tags.push(resultObj.tags.split(','));
-
-    resultObj.tags = tags;
+    resultObj.tags = resultObj.tags.split(',');
   });
-
-
-
-
-
-
-
+  
   // success
   return res.json(result);
 };
