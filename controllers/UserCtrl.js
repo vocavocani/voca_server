@@ -14,12 +14,19 @@ exports.register = async(req, res, next) => {
   // }
 
   let pw;
+  console.log(req.body.pw1, req.body.pw2);
   if (req.body.pw1 !== req.body.pw2) {
     return res.status(400).json(resMsg[1404])
   } else {
     pw = req.body.pw1
   }
 
+  let image;
+  if (!req.file) { // 이미지가 없는 경우
+    image = null;
+  } else {
+    image = req.file.location;
+  }
   let result = '';
   try {
     const userData = {
@@ -27,7 +34,7 @@ exports.register = async(req, res, next) => {
       pw: config.do_cipher(pw),
       nickname: req.body.nickname,
       email: req.body.email,
-
+      img: image
     };
 
     result = await userModel.register(userData);

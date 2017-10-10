@@ -44,15 +44,20 @@ exports.list = (user_idx) => {
       SELECT
         t.team_idx,
         t.team_name,
-        t.team_image
-      FROM team AS t
+        t.team_image,
+        (SELECT GROUP_CONCAT(t.tag_name)
+      FROM tag AS t LEFT JOIN team_to_tag AS tt ON t.tag_idx = tt.tag_idx
+       WHERE tt.team_idx = t.team_idx) AS tags
+       FROM team AS t
         LEFT JOIN team_member AS tm ON t.team_idx = tm.team_idx
-      WHERE tm.user_idx = ? AND team_member_permission >= 0;
+        WHERE tm.user_idx = ? AND team_member_permission >= 0;
+
       `;
     pool.query(sql, user_idx, (err, rows) => {
       if (err) {
         reject(err);
       } else {
+
         resolve(rows);
       }
     })
