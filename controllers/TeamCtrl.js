@@ -23,7 +23,7 @@ exports.list = async (req, res, next) => {
   result.forEach((resultObj) => {
     resultObj.tags = resultObj.tags.split(',');
   });
-  
+
   // success
   return res.json(result);
 };

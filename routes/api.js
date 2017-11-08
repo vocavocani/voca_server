@@ -16,26 +16,14 @@ module.exports = (router) => {
   router.route('/t')
     .post(teamCtrl.tagging);
 
-  // USER
-  router.route('/users/register')
-    .post(imageCtrl.uploadSingle, validate(ParamValidation.user_register),userCtrl.register);
-  router.route('/users/check')
-    .post(userCtrl.check);
-
-  router.route('/users/login')
-    .post(validate(ParamValidation.user_login),userCtrl.login);
-
-  // PROFILE
-  router.route('/users')
-    .get(authCtrl.auth, userCtrl.profile);
-
-
-
 
   // TEAM
   router.route('/teams')
     .get(authCtrl.auth, teamCtrl.list)
     .post(authCtrl.auth, imageCtrl.uploadSingle ,teamCtrl.create);
+
+  router.route('teams/search/:search')
+    .get();
 
   router.route('/teams/:team_idx/apply')
     .post(authCtrl.auth, teamCtrl.apply);
@@ -49,6 +37,9 @@ module.exports = (router) => {
   router.route('/teams/:team_idx/posts')
     .get(authCtrl.auth, postCtrl.list)
     .post(authCtrl.auth, imageCtrl.uploadArray, postCtrl.write);
+
+
+
 
   return router;
 };
